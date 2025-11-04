@@ -53,10 +53,6 @@ impl SimulationField {
     pub fn min(&self) -> f32 {
         self.min
     }
-
-    pub fn value(&self) -> f32 {
-        self.value
-    }
 }
 
 impl core::fmt::Display for SimulationField {

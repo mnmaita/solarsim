@@ -7,7 +7,7 @@ mod slider;
 
 pub use slider::*;
 
-use crate::{SimulationConfig, simulation::SimulationField};
+use crate::simulation::{SimulationConfig, SimulationField};
 
 fn update_widget_values(
     cfg: Res<SimulationConfig>,
