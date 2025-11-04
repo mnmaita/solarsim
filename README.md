@@ -20,7 +20,7 @@ The simulation contemplates the following variables:
 
 ## Quick Start
 
-Run these commands on separate terminals
+Run these commands on two separate terminals
 
 ```sh
 just dev server
@@ -32,44 +32,8 @@ just dev client
 
 Now you can alter the simulation parameters either on the server window or through the website (http://localhost:3000 by default).
 
-To see a list of all the available recipes `just` run
+To see a list of all the available recipes in the project `just` run
 
 ```sh
 just
 ```
-
-## Server
-
-The server is a [Bevy](https://bevy.org/) app that runs the simulation with a fixed timestep and can be remotely controlled through the [Bevy Remote Protocol](https://docs.rs/bevy_remote/latest/bevy_remote/). It renders an interactive UI with controls to alter the simulation parameters.
-
-### Running the server
-
-To run the development build:
-
-```sh
-just dev server
-```
-
-To run the release build:
-
-```sh
-just run server
-```
-
-## Client
-
-The client is a Next.js static website that displays the simulation parameters and outputs. Parameters can also be altered from the client, and the server will be updated through BRP calls.
-
-To run the development build:
-
-```sh
-just dev client
-```
-
-To build and serve the production build:
-
-```sh
-just run client
-```
-
-You can change the server host and port by updating the environment variables in the `solarsim-client/.env.local` file.
