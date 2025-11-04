@@ -6,7 +6,7 @@ import { ReadOnlyFields } from "./components/ReadOnlyFields";
 import { SliderFields } from "./components/SliderFields";
 import { Container, Flex, Section, Text } from "@radix-ui/themes";
 import { useEffect, useRef, useState } from "react";
-import { usePolling } from "./utils/usePolling";
+import { usePolling } from "./hooks/usePolling";
 
 export default function Home() {
   const { data } = usePolling(() =>
