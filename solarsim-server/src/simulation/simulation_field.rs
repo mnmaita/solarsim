@@ -4,20 +4,24 @@ use bevy::{
 };
 use serde::{Deserialize, Serialize};
 
-#[derive(Reflect, Serialize, Deserialize, PartialEq, Clone, Copy)]
+#[derive(Reflect, Serialize, Deserialize, PartialEq, Clone, Copy, Default)]
 #[reflect(Serialize, Deserialize)]
 pub enum SimulationFieldKind {
     /// This field is editable via a Slider
     Slider,
     /// This field is read-only, it will only be mutated by the simulation.
+    #[default]
     ReadOnly,
 }
 
 #[derive(Reflect, Serialize, Deserialize, Deref, DerefMut)]
 #[reflect(Serialize, Deserialize)]
 pub struct SimulationField {
+    #[serde(skip_deserializing)]
     kind: SimulationFieldKind,
+    #[serde(skip_deserializing)]
     max: f32,
+    #[serde(skip_deserializing)]
     min: f32,
     #[deref]
     value: f32,
@@ -62,5 +66,16 @@ impl SimulationField {
 impl core::fmt::Display for SimulationField {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "{:.2}", self.value)
+    }
+}
+
+impl Default for SimulationField {
+    fn default() -> Self {
+        Self {
+            kind: SimulationFieldKind::ReadOnly,
+            max: 1.0,
+            min: 0.0,
+            value: 0.0,
+        }
     }
 }
