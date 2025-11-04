@@ -54,7 +54,6 @@ fn setup(mut commands: Commands, cfg: Res<SimulationConfig>) {
                         Node {
                             min_width: percent(35),
                             align_items: AlignItems::Stretch,
-                            // justify_content: JustifyContent::Center,
                             flex_direction: FlexDirection::Column,
                             row_gap: px(5),
                             ..default()
