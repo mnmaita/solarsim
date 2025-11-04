@@ -1,5 +1,15 @@
+import "./palette/radix-accents-dark.css";
+import "./palette/radix-background-dark.css";
+import "./palette/radix-gray-dark.css";
+import "./palette/radix-accents-light.css";
+import "./palette/radix-background-light.css";
+import "./palette/radix-gray-light.css";
+import "@radix-ui/themes/styles.css";
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { ThemeProvider } from "next-themes";
+import { Flex, Text, Theme } from "@radix-ui/themes";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -23,9 +33,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <Theme appearance="inherit">{children}</Theme>
+        </ThemeProvider>
       </body>
     </html>
   );
