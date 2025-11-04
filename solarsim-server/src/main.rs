@@ -20,7 +20,13 @@ fn main() {
         .insert("Access-Control-Allow-Headers", "Content-Type");
 
     app.add_plugins((
-        DefaultPlugins,
+        DefaultPlugins.set(WindowPlugin {
+            primary_window: Some(Window {
+                resizable: false,
+                ..default()
+            }),
+            ..default()
+        }),
         UiWidgetsPlugins,
         InputDispatchPlugin,
         TabNavigationPlugin,
