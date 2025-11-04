@@ -1,38 +1,46 @@
+"use client";
+
 import { brpRequest } from "./requests";
 import { displayFetchErrorType } from "./utils/fetch";
-import { capitalize } from "./utils/strings";
-import {
-  Box,
-  Container,
-  Flex,
-  Section,
-  Skeleton,
-  Slider,
-  Text,
-} from "@radix-ui/themes";
-import { ReactNode } from "react";
+import { ReadOnlyFields } from "./components/ReadOnlyFields";
+import { SliderFields } from "./components/SliderFields";
+import { Container, Flex, Section, Text } from "@radix-ui/themes";
+import { useEffect, useRef, useState } from "react";
+import { usePolling } from "./utils/usePolling";
 
-export default async function Home() {
-  const simulationFields = await brpRequest({
-    id: 0,
-    jsonrpc: "2.0",
-    method: "world.get_resources",
-    params: { resource: "solarsim_server::SimulationConfig" },
-  })
-    .then((body) => {
-      if (body.ok === false) {
-        return Error(displayFetchErrorType(body.error.type));
-      } else {
-        console.log(body.data.result.value);
-        return Object.entries(
-          body.data.result.value as Record<string, SimulationField>
-        );
-      }
+export default function Home() {
+  const { data } = usePolling(() =>
+    brpRequest({
+      id: 0,
+      jsonrpc: "2.0",
+      method: "world.get_resources",
+      params: { resource: "solarsim_server::SimulationConfig" },
     })
-    .catch((err) => {
-      console.log(err);
-      return Error("Unknown error :(");
-    });
+      .then((body) => {
+        if (body.ok === false) {
+          return Error(displayFetchErrorType(body.error.type));
+        } else {
+          return body.data.result.value as Record<string, SimulationField>;
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        return Error("Unknown error :(");
+      })
+  );
+
+  const [simulationFields, setSimulationFields] = useState<
+    Record<string, SimulationField> | Error | null
+  >({});
+  const userInteracting = useRef(false);
+
+  // When polling updates come in, apply only if user isn't dragging
+  useEffect(() => {
+    if (!userInteracting.current) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSimulationFields(data);
+    }
+  }, [data]);
 
   return (
     <Section>
@@ -56,7 +64,11 @@ export default async function Home() {
                 <Text size={"8"} aria-label="Simulation Parameters">
                   Simulation Parameters
                 </Text>
-                {sliderFields(simulationFields)}
+                <SliderFields
+                  setSimulationFields={setSimulationFields}
+                  simulationFields={simulationFields}
+                  userInteracting={userInteracting}
+                />
               </Flex>
               <Flex
                 direction="column"
@@ -67,7 +79,7 @@ export default async function Home() {
                 <Text size={"8"} aria-label="Simulation Results">
                   Simulation Results
                 </Text>
-                {readOnlyFields(simulationFields)}
+                <ReadOnlyFields simulationFields={simulationFields} />
               </Flex>
             </>
           )}
@@ -75,43 +87,4 @@ export default async function Home() {
       </Container>
     </Section>
   );
-}
-
-function sliderFields(fields: Array<[string, SimulationField]>): ReactNode {
-  return fields
-    .filter(([_, value]) => value.kind === "Slider")
-    .map(([key, value]) => (
-      <Box key={key} width="100%">
-        <Flex direction="column" gapY="2">
-          <Skeleton loading={fields.length === 0}>
-            <Text id={key} as="label">
-              {capitalize(key)}
-            </Text>
-            <Slider
-              aria-labelledby={key}
-              defaultValue={[value.value]}
-              min={value.min}
-              max={value.max}
-            />
-          </Skeleton>
-        </Flex>
-      </Box>
-    ));
-}
-
-function readOnlyFields(fields: Array<[string, SimulationField]>): ReactNode {
-  return fields
-    .filter(([_, value]) => value.kind === "ReadOnly")
-    .map(([key, value]) => (
-      <Box key={key} width="100%">
-        <Skeleton loading={fields.length === 0}>
-          <Flex direction="column">
-            <Text id={key} as="label">
-              {capitalize(key)}
-            </Text>
-            <Text aria-labelledby={key}>{value.value}</Text>
-          </Flex>
-        </Skeleton>
-      </Box>
-    ));
 }
