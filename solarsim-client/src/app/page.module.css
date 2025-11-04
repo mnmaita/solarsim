@@ -19,25 +19,12 @@
 
 .main {
   display: flex;
-  min-height: 100vh;
   width: 100%;
-  max-width: 800px;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
   background-color: var(--foreground);
-  padding: 120px 60px;
 }
 
-.intro {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  gap: 24px;
-}
-
-.intro h1 {
+.main h1 {
   max-width: 320px;
   font-size: 40px;
   font-weight: 600;
@@ -47,7 +34,7 @@
   color: var(--text-primary);
 }
 
-.intro p {
+.main p {
   max-width: 440px;
   font-size: 18px;
   line-height: 32px;
@@ -55,7 +42,7 @@
   color: var(--text-secondary);
 }
 
-.intro a {
+.main a {
   font-weight: 500;
   color: var(--text-primary);
 }
@@ -88,11 +75,7 @@ a.secondary {
     padding: 48px 24px;
   }
 
-  .intro {
-    gap: 16px;
-  }
-
-  .intro h1 {
+  .main h1 {
     font-size: 32px;
     line-height: 40px;
     letter-spacing: -1.92px;
