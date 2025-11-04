@@ -1,0 +1,126 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Home renders Home page unchanged 1`] = `
+<div>
+  <section
+    class="rt-Section rt-r-size-3"
+  >
+    <div
+      class="rt-Container rt-r-size-1 md:rt-r-size-3 lg:rt-r-size-4 rt-r-ai-center"
+    >
+      <div
+        class="rt-ContainerInner"
+      >
+        <div
+          class="rt-Flex rt-r-fd-column md:rt-r-fd-row rt-r-ai-center md:rt-r-ai-start rt-r-gap-8 md:rt-r-gap-6"
+        >
+          <div
+            class="rt-Flex rt-r-fd-column rt-r-ai-center md:rt-r-ai-start rt-r-gap-4 rt-r-px-4 rt-r-w md:rt-r-w"
+            style="--width-md: 50%; --width: 100%;"
+          >
+            <span
+              aria-label="Simulation Parameters"
+              class="rt-Text rt-r-size-6 xs:rt-r-size-7"
+            >
+              Simulation Parameters
+            </span>
+            <div
+              class="rt-Box rt-r-w"
+              style="--width: 100%;"
+            >
+              <div
+                class="rt-Flex rt-r-fd-column rt-r-rg-2"
+              >
+                <div
+                  class="rt-Flex rt-r-jc-space-between"
+                >
+                  <label
+                    class="rt-Text"
+                    id="slider_field"
+                  >
+                    Slider Field
+                  </label>
+                  <label
+                    class="rt-Text"
+                    id="slider_field"
+                  >
+                    50.00
+                  </label>
+                </div>
+                <span
+                  aria-disabled="false"
+                  aria-labelledby="slider_field"
+                  class="rt-SliderRoot rt-r-size-2 rt-variant-surface"
+                  data-accent-color="amber"
+                  data-orientation="horizontal"
+                  dir="ltr"
+                  style="--radix-slider-thumb-transform: translateX(-50%);"
+                >
+                  <span
+                    class="rt-SliderTrack"
+                    data-orientation="horizontal"
+                  >
+                    <span
+                      class="rt-SliderRange"
+                      data-orientation="horizontal"
+                      style="left: 0%; right: 50%;"
+                    />
+                  </span>
+                  <span
+                    style="transform: var(--radix-slider-thumb-transform); position: absolute; left: calc(50% + 0px);"
+                  >
+                    <span
+                      aria-orientation="horizontal"
+                      aria-valuemax="0"
+                      aria-valuemin="100"
+                      aria-valuenow="50"
+                      class="rt-SliderThumb"
+                      data-orientation="horizontal"
+                      data-radix-collection-item=""
+                      role="slider"
+                      style=""
+                      tabindex="0"
+                    />
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div
+            class="rt-Flex rt-r-fd-column rt-r-ai-center md:rt-r-ai-start rt-r-gap-4 rt-r-px-4 rt-r-w md:rt-r-w"
+            style="--width-md: 50%; --width: 100%;"
+          >
+            <span
+              aria-label="Simulation Results"
+              class="rt-Text rt-r-size-6 xs:rt-r-size-7"
+            >
+              Simulation Results
+            </span>
+            <div
+              class="rt-Box rt-r-w"
+              style="--width: 100%;"
+            >
+              <div
+                class="rt-Flex rt-r-fd-column"
+              >
+                <label
+                  class="rt-Text"
+                  id="read_only_field"
+                >
+                  Read Only Field
+                </label>
+                <span
+                  aria-labelledby="read_only_field"
+                  class="rt-Text"
+                >
+                  25
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+`;
