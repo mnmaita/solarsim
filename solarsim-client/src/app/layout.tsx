@@ -11,7 +11,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import { Container, Flex, Section, Text, Theme } from "@radix-ui/themes";
 import "./globals.css";
-import { ThemeToggle } from "./components/theme-toggle";
+import { ThemeToggle } from "./components/ThemeToggle";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
