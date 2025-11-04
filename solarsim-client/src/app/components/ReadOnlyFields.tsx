@@ -6,7 +6,9 @@ interface Props {
   simulationFields: Record<string, SimulationField> | null;
 }
 
-export function ReadOnlyFields({ simulationFields }: Props): ReactNode {
+export function ReadOnlyFields({
+  simulationFields,
+}: Readonly<Props>): ReactNode {
   if (simulationFields === null) {
     return (
       <Skeleton>

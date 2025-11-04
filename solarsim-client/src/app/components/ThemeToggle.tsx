@@ -9,7 +9,7 @@ interface Props {
   style?: CSSProperties;
 }
 
-export function ThemeToggle({ style }: Props) {
+export function ThemeToggle({ style }: Readonly<Props>) {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 

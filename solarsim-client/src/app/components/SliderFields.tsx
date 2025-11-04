@@ -17,7 +17,7 @@ export function SliderFields({
   simulationFields,
   setSimulationFields,
   userInteracting,
-}: Props): ReactNode {
+}: Readonly<Props>): ReactNode {
   if (simulationFields === null) {
     return (
       <Skeleton>
