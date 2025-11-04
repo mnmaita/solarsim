@@ -13,3 +13,7 @@ run app:
 # Valid values for the `app` parameter: client, server.
 dev app:
   just solarsim-{{app}}/dev
+
+# Valid values for the `app` parameter: client, server.
+test app *ARGS:
+  just solarsim-{{app}}/test {{ARGS}}

@@ -6,3 +6,6 @@ run:
 
 dev:
     cargo run
+
+test *ARGS:
+    cargo test {{ARGS}}
