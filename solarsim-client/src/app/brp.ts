@@ -49,11 +49,36 @@ export interface BRPGetResourcesRequestBody extends BRPCommonRequestBody {
   };
 }
 
+export interface BRPMutateResourcesRequestBody extends BRPCommonRequestBody {
+  method: "world.mutate_resources";
+  params: {
+    resource: string;
+    path: string;
+    value: unknown;
+  };
+}
+
 export type BRPRequestBody =
+  | BRPGetComponentsRequestBody
   | BRPGetResourcesRequestBody
-  | BRPGetComponentsRequestBody;
+  | BRPMutateResourcesRequestBody;
 
 // Responses
+
+//
+/**
+ * If the "strict" request parameter is set to "false", `result` will be a `Record<string, JSONValue>`.
+ *
+ * If the "strict" request parameter is set to "true", an object with `components` and `errors` will be retrieved.
+ */
+interface BRPGetComponentsResponse extends BRPCommonBody {
+  result:
+    | Record<string, JSONValue>
+    | {
+        components: Record<string, JSONValue>;
+        errors: Record<string, string>;
+      };
+}
 
 interface BRPGetResourcesResponse extends BRPCommonBody {
   result: {
@@ -61,16 +86,8 @@ interface BRPGetResourcesResponse extends BRPCommonBody {
   };
 }
 
-interface BRPGetComponentsResponse extends BRPCommonBody {
-  result:
-    | Record<string, JSONValue>
-    | {
-        // This will only be present if the "strict" request parameter is set to "true"
-        components?: Record<string, JSONValue>;
-        // This will only be present if the "strict" request parameter is set to "true"
-        errors?: Record<string, string>;
-        // This will only be present if the "strict" request parameter is set to "false"
-      };
+interface BRPMutateResourcesResponse extends BRPCommonBody {
+  result: null;
 }
 
 interface BRPRequestResponseMap {
@@ -88,7 +105,7 @@ interface BRPRequestResponseMap {
   "world.list_components+watch": never;
   "world.insert_resources": never;
   "world.remove_resources": never;
-  "world.mutate_resources": never;
+  "world.mutate_resources": BRPMutateResourcesResponse;
   "world.list_resources": never;
   "registry.schema": never;
   "rpc.discover": never;
