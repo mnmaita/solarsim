@@ -36,20 +36,28 @@ fn main() {
         TabNavigationPlugin,
         RemotePlugin::default(),
         RemoteHttpPlugin::default().with_headers(cors_headers),
-    ))
-    .add_plugins(widgets::plugin)
-    .add_systems(Startup, setup)
-    .add_systems(
-        FixedUpdate,
-        solar_update_system.run_if(resource_exists::<SimulationConfig>),
-    )
-    .add_systems(
-        Update,
-        update_field_values.run_if(resource_changed::<SimulationConfig>),
-    )
-    .insert_resource(Time::<Fixed>::from_seconds(0.5))
-    .register_type::<SimulationConfig>()
-    .init_resource::<SimulationConfig>();
+    ));
+
+    bevy::asset::load_internal_binary_asset!(
+        app,
+        TextFont::default().font,
+        "../assets/fonts/Segoe UI.ttf",
+        |bytes: &[u8], _path: String| { Font::try_from_bytes(bytes.to_vec()).unwrap() }
+    );
+
+    app.add_plugins(widgets::plugin)
+        .add_systems(Startup, setup)
+        .add_systems(
+            FixedUpdate,
+            solar_update_system.run_if(resource_exists::<SimulationConfig>),
+        )
+        .add_systems(
+            Update,
+            update_field_values.run_if(resource_changed::<SimulationConfig>),
+        )
+        .insert_resource(Time::<Fixed>::from_seconds(0.5))
+        .register_type::<SimulationConfig>()
+        .init_resource::<SimulationConfig>();
 
     app.run();
 }
