@@ -48,7 +48,7 @@ export function SliderFields({
               value={[fieldValue.value]}
               min={fieldValue.min}
               max={fieldValue.max}
-              step={0.1}
+              step={(() => (fieldValue.max < 1.0 ? 0.01 : 0.1))()}
               onPointerDown={() => {
                 userInteracting.current = true;
               }}
