@@ -45,7 +45,7 @@ pub struct SimulationConfig {
 impl Default for SimulationConfig {
     fn default() -> Self {
         Self {
-            ambient_temp: SimulationField::new(25.0, -88.0, 58.0, SimulationFieldKind::Slider),
+            ambient_temp: SimulationField::new(25.0, -25.0, 45.0, SimulationFieldKind::Slider),
             panel_heat_loss_coefficient: SimulationField::new(
                 0.0,
                 4.0,
