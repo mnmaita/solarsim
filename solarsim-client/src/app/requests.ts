@@ -1,5 +1,5 @@
 import type { FetchResult } from "./utils/fetch";
-import type { BRPRequestBody, BRPResponseFor } from "./utils/brp";
+import type { BRPRequestBody, BRPResponseFor } from "./brp";
 
 const host = process.env.NEXT_PUBLIC_SOLARSIM_SERVER_HOST;
 const port = process.env.NEXT_PUBLIC_SOLARSIM_SERVER_PORT;
@@ -11,16 +11,10 @@ const requestInit: RequestInit = {
 const timeoutMs = 10_000;
 
 /**
- * Get the value of a Resource
+ * Perform a Bevy Remote Protocol request against the Server.
  *
- * @param {string} name - Type name of the Resource (without its full path).
- * @param {string} [path] - Fully-qualified type path of the resource to get (without its name).
- * Defaults to "solarsim_server".
- * @param {JSONValue} [id] - Arbitrary JSON data. The server completely ignores its contents,
- * and the client may use it for any purpose. It will be copied via
- * serialization and deserialization (so object property order, etc. can’t be
- * relied upon to be identical) and sent back to the client as part of the
- * response. Defaults to 0.
+ * @param {R} request - The body of the request to be sent.
+ * Check `brp.ts` to review the valid fields for each request.
  * */
 export async function brpRequest<R extends BRPRequestBody>(
   request: R
