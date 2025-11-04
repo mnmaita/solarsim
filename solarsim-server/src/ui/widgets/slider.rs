@@ -116,6 +116,6 @@ pub(super) fn update_slider_style(
     }
 }
 
-pub fn plugin(app: &mut App) {
+pub(super) fn plugin(app: &mut App) {
     app.add_systems(Update, update_slider_style);
 }
