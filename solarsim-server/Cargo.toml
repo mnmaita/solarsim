@@ -1,0 +1,27 @@
+[package]
+name = "solarsim-server"
+version = "0.1.0"
+edition = "2024"
+
+[profile.release]
+lto = true
+strip = true
+codegen-units = 1
+
+[dependencies]
+bevy = { version = "0.17.2", default-features = false, features = [
+    "bevy_core_pipeline",
+    "bevy_log",
+    "bevy_remote",
+    "bevy_render",
+    "bevy_text",
+    "bevy_ui_render",
+    "bevy_window",
+    "bevy_winit",
+    "default_font",
+    "multi_threaded",
+    "webgpu",
+] }
+serde = { version = "1.0.228", default-features = false, features = [
+    "serde_derive",
+] }

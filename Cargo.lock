@@ -3414,7 +3414,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "solarsim"
+name = "solarsim-server"
 version = "0.1.0"
 dependencies = [
  "bevy",
