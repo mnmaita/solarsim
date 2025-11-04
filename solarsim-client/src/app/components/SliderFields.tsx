@@ -72,7 +72,8 @@ export function SliderFields({
                   jsonrpc: "2.0",
                   method: "world.mutate_resources",
                   params: {
-                    resource: "solarsim_server::SimulationConfig",
+                    resource:
+                      "solarsim_server::simulation::simulation_config::SimulationConfig",
                     path: `.${fieldName}`,
                     value: {
                       ...fieldValue,
