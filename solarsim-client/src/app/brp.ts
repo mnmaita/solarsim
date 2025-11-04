@@ -1,5 +1,7 @@
 import type { JSONValue } from "next/dist/server/config-shared";
 
+type CustomBRPMethod = "simulation.update_field";
+
 type BRPMethod =
   | "world.get_components"
   | "world.query"
@@ -18,7 +20,8 @@ type BRPMethod =
   | "world.mutate_resources"
   | "world.list_resources"
   | "registry.schema"
-  | "rpc.discover";
+  | "rpc.discover"
+  | CustomBRPMethod;
 
 interface BRPCommonBody {
   jsonrpc: "2.0";
@@ -58,10 +61,20 @@ export interface BRPMutateResourcesRequestBody extends BRPCommonRequestBody {
   };
 }
 
+export interface BRPSimulationUpdateFieldRequestBody
+  extends BRPCommonRequestBody {
+  method: "simulation.update_field";
+  params: {
+    field_name: string;
+    value: number;
+  };
+}
+
 export type BRPRequestBody =
   | BRPGetComponentsRequestBody
   | BRPGetResourcesRequestBody
-  | BRPMutateResourcesRequestBody;
+  | BRPMutateResourcesRequestBody
+  | BRPSimulationUpdateFieldRequestBody;
 
 // Responses
 
@@ -90,6 +103,10 @@ export interface BRPMutateResourcesResponse extends BRPCommonBody {
   result: null;
 }
 
+export interface BRPSimulationUpdateFieldResponse extends BRPCommonBody {
+  result: string;
+}
+
 interface BRPRequestResponseMap {
   "world.get_resources": BRPGetResourcesResponse;
   "world.get_components": BRPGetComponentsResponse;
@@ -109,6 +126,7 @@ interface BRPRequestResponseMap {
   "world.list_resources": never;
   "registry.schema": never;
   "rpc.discover": never;
+  "simulation.update_field": BRPSimulationUpdateFieldResponse;
 }
 
 export type BRPResponseFor<R extends BRPRequestBody> = R extends {

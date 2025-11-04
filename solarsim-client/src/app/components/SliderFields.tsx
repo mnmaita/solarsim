@@ -70,15 +70,10 @@ export function SliderFields({
                 brpRequest({
                   id: 0,
                   jsonrpc: "2.0",
-                  method: "world.mutate_resources",
+                  method: "simulation.update_field",
                   params: {
-                    resource:
-                      "solarsim_server::simulation::simulation_config::SimulationConfig",
-                    path: `.${fieldName}`,
-                    value: {
-                      ...fieldValue,
-                      value: val,
-                    } as SimulationField,
+                    field_name: fieldName,
+                    value: val,
                   },
                 })
                   .then((value) => {

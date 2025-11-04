@@ -17,11 +17,8 @@ pub enum SimulationFieldKind {
 #[derive(Reflect, Serialize, Deserialize, Deref, DerefMut)]
 #[reflect(Serialize, Deserialize)]
 pub struct SimulationField {
-    #[serde(skip_deserializing)]
     kind: SimulationFieldKind,
-    #[serde(skip_deserializing)]
     max: f32,
-    #[serde(skip_deserializing)]
     min: f32,
     #[deref]
     value: f32,

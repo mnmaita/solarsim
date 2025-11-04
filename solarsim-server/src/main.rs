@@ -8,6 +8,9 @@ use bevy::{
     ui_widgets::UiWidgetsPlugins,
 };
 
+use crate::brp::simulation_update_field;
+
+mod brp;
 mod simulation;
 mod ui;
 mod utils;
@@ -32,7 +35,7 @@ fn main() {
         UiWidgetsPlugins,
         InputDispatchPlugin,
         TabNavigationPlugin,
-        RemotePlugin::default(),
+        RemotePlugin::default().with_method("simulation.update_field", simulation_update_field),
         RemoteHttpPlugin::default().with_headers(cors_headers),
     ));
 

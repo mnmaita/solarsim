@@ -24,3 +24,4 @@ bevy = { version = "0.17.2", default-features = false, features = [
 serde = { version = "1.0.228", default-features = false, features = [
     "serde_derive",
 ] }
+serde_json = { version = "1.0.145", default-features = false }
