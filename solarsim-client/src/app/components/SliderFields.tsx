@@ -34,9 +34,14 @@ export function SliderFields({
       <Box key={fieldName} width="100%">
         <Flex direction="column" gapY="2">
           <Skeleton loading={entries.length === 0}>
-            <Text id={fieldName} as="label">
-              {capitalize(fieldName)}
-            </Text>
+            <Flex justify="between">
+              <Text id={fieldName} as="label">
+                {capitalize(fieldName)}
+              </Text>
+              <Text id={fieldName} as="label">
+                {fieldValue.value.toFixed(2)}
+              </Text>
+            </Flex>
             <Slider
               aria-labelledby={fieldName}
               color="amber"
