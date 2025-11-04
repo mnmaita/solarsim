@@ -9,4 +9,6 @@ strip = true
 codegen-units = 1
 
 [dependencies]
-bevy = { version = "0.17.2", default-features = false, features = ["bevy_ui"] }
+bevy = { version = "0.17.2", default-features = false, features = [
+    "bevy_ui_render",
+] }
