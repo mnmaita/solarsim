@@ -14,7 +14,10 @@ export default function Home() {
       id: 0,
       jsonrpc: "2.0",
       method: "world.get_resources",
-      params: { resource: "solarsim_server::SimulationConfig" },
+      params: {
+        resource:
+          "solarsim_server::simulation::simulation_config::SimulationConfig",
+      },
     })
       .then((body) => {
         if (body.ok === false) {
