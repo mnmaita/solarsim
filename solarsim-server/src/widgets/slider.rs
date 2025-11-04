@@ -2,7 +2,10 @@ use bevy::{
     input_focus::tab_navigation::TabIndex,
     picking::hover::Hovered,
     prelude::*,
-    ui_widgets::{CoreSliderDragState, Slider, SliderRange, SliderThumb, SliderValue, TrackClick},
+    ui_widgets::{
+        CoreSliderDragState, Slider, SliderPrecision, SliderRange, SliderThumb, SliderValue,
+        TrackClick,
+    },
 };
 
 const SLIDER_TRACK: Color = Color::srgb(0.05, 0.05, 0.05);
@@ -26,6 +29,7 @@ pub fn slider(min: f32, max: f32, value: f32) -> impl Bundle {
         },
         SliderValue(value),
         SliderRange::new(min, max),
+        SliderPrecision(2),
         TabIndex(0),
         Children::spawn((
             // Slider background rail
