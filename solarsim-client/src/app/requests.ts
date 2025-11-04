@@ -1,9 +1,14 @@
 import type { JSONValue } from "next/dist/server/config-shared";
+import type { FetchResult } from "./utils/fetch";
 
 const host = process.env.NEXT_PUBLIC_SOLARSIM_SERVER_HOST;
 const port = process.env.NEXT_PUBLIC_SOLARSIM_SERVER_PORT;
 const url = URL.parse(`${host}:${port}`) ?? `${host}:${port}`;
-const requestInit: RequestInit = { method: "post" };
+const requestInit: RequestInit = {
+  headers: { "Content-Type": "application/json" },
+  method: "post",
+};
+const timeoutMs = 10_000;
 
 type BRPMethod =
   | "world.get_components"
@@ -49,6 +54,8 @@ export interface BRPGetResourcesResponse extends BRPCommonBody {
   };
 }
 
+type BRPRequest = BRPGetResourcesRequest;
+
 /**
  * Get the value of a Resource
  *
@@ -61,22 +68,69 @@ export interface BRPGetResourcesResponse extends BRPCommonBody {
  * relied upon to be identical) and sent back to the client as part of the
  * response. Defaults to 0.
  * */
-export function getResource(
+export async function getResource(
   name: string,
   path: string = "solarsim_server",
   id: JSONValue = 0
-): Promise<BRPGetResourcesResponse> {
-  const body: BRPGetResourcesRequest = {
-    jsonrpc: "2.0",
-    method: "world.get_resources",
-    id,
-    params: {
-      resource: `${path}::${name}`,
-    },
-  };
+): Promise<FetchResult<BRPGetResourcesResponse>> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
-  return fetch(url, {
-    ...requestInit,
-    body: JSON.stringify(body),
-  }).then((res) => res.json() as Promise<BRPGetResourcesResponse>);
+  try {
+    const body: BRPGetResourcesRequest = {
+      jsonrpc: "2.0",
+      method: "world.get_resources",
+      id,
+      params: {
+        resource: `${path}::${name}`,
+      },
+    };
+
+    const response = await fetch(url, {
+      ...requestInit,
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeout);
+
+    if (!response.ok) {
+      const text = await response.text().catch(() => "");
+
+      return {
+        ok: false,
+        error: {
+          type: "BAD_STATUS",
+          message: `HTTP error ${response.status}: ${response.statusText}`,
+          status: response.status,
+          details: text,
+        },
+      };
+    }
+
+    const data = (await response.json()) as BRPGetResourcesResponse;
+
+    return { ok: true, status: response.status, data };
+  } catch (error) {
+    clearTimeout(timeout);
+
+    if (error instanceof DOMException && error.name === "AbortError") {
+      return {
+        ok: false,
+        error: {
+          type: "TIMEOUT",
+          message: `Request timed out after ${timeoutMs} ms`,
+        },
+      };
+    }
+
+    return {
+      ok: false,
+      error: {
+        type: "NETWORK_ERROR",
+        message: (error as Error)?.message ?? "Network request failed",
+        details: error,
+      },
+    };
+  }
 }

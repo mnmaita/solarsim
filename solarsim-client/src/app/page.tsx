@@ -1,11 +1,26 @@
 import styles from "./page.module.css";
+import { getResource } from "./requests";
+import { displayFetchErrorType } from "./utils/fetch";
 
-export default function Home() {
+export default async function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
         <div className={styles.intro}>
-          <h1>Hello World!</h1>
+          <h1>
+            {await getResource("HelloWorld")
+              .then((body) => {
+                if (body.ok === false) {
+                  return displayFetchErrorType(body.error.type);
+                } else {
+                  return body.data.result.value as string;
+                }
+              })
+              .catch((err) => {
+                console.log(err);
+                return "Unknown error :(";
+              })}
+          </h1>
         </div>
       </main>
     </div>
