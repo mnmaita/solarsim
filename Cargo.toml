@@ -2,3 +2,11 @@
 name = "passivelogic-physics-simulation"
 version = "0.1.0"
 edition = "2024"
+
+[profile.release]
+lto = true
+strip = true
+codegen-units = 1
+
+[dependencies]
+bevy = { version = "0.17.2", default-features = false, features = ["bevy_ui"] }
