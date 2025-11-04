@@ -2,3 +2,8 @@
 resolver = "3"
 members = ["solarsim-server"]
 exclude = ["solarsim-client"]
+
+[profile.release]
+lto = true
+strip = true
+codegen-units = 1
