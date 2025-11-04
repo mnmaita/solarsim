@@ -1,3 +1,4 @@
+/// Capitalizes "snake_case" words (e.g. snake_case -> Snake Case)
 pub fn capitalize(str: impl Into<String>) -> String {
     str.into()
         .split('_')
