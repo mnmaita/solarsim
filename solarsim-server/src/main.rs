@@ -12,6 +12,8 @@ mod simulation;
 mod ui;
 mod utils;
 
+const FIXED_TIMESTEP_SECS: f64 = 0.5;
+
 fn main() {
     let mut app = App::new();
 
@@ -38,7 +40,7 @@ fn main() {
 
     app.add_plugins((simulation::plugin, ui::plugin));
 
-    app.insert_resource(Time::<Fixed>::from_seconds(0.5));
+    app.insert_resource(Time::<Fixed>::from_seconds(FIXED_TIMESTEP_SECS));
 
     app.run();
 }
