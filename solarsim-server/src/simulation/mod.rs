@@ -81,3 +81,241 @@ fn update_tank_geometry(mut cfg: ResMut<SimulationConfig>) {
         *cfg.tank_water_mass = cfg.tank_water_mass.max();
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use std::time::Duration;
+
+    use crate::FIXED_TIMESTEP_SECS;
+
+    use super::*;
+
+    fn setup_app() -> App {
+        let mut app = App::new();
+        app.insert_resource(Time::<Fixed>::from_seconds(FIXED_TIMESTEP_SECS));
+        app.insert_resource(SimulationConfig::default());
+        app
+    }
+
+    fn tank_mass(cfg: &SimulationConfig) -> (f32, f32) {
+        (*cfg.tank_water_mass, cfg.tank_water_mass.max())
+    }
+
+    #[test]
+    fn tank_heats_due_to_solar() {
+        let mut app = setup_app();
+
+        app.add_systems(Update, run_simulation);
+
+        let initial_temp = *app.world().resource::<SimulationConfig>().tank_average_temp;
+
+        let mut cfg = app.world_mut().resource_mut::<SimulationConfig>();
+
+        *cfg.solar_irradiance = 1000.0;
+        *cfg.panel_area = 3.0;
+        *cfg.panel_efficiency = 0.3;
+        *cfg.panel_heat_loss_coefficient = 0.0;
+        *cfg.panel_loss_area = 0.0;
+        *cfg.pipe_overall_heat_transfer_coefficient = 0.0;
+        *cfg.tank_heat_loss_coefficient = 0.0;
+        *cfg.load_mass_flow_rate = 0.0;
+
+        app.world_mut()
+            .resource_mut::<Time<Fixed>>()
+            .advance_by(Duration::from_secs_f64(FIXED_TIMESTEP_SECS));
+        app.update();
+
+        let new_temp = *app.world().resource::<SimulationConfig>().tank_average_temp;
+
+        assert!(
+            new_temp > initial_temp,
+            "Tank should heat up due to solar input"
+        );
+    }
+
+    #[test]
+    fn tank_cools_due_to_water_draw() {
+        let mut app = setup_app();
+
+        app.add_systems(Update, run_simulation);
+
+        let initial_temp = *app.world().resource::<SimulationConfig>().tank_average_temp;
+
+        let mut cfg = app.world_mut().resource_mut::<SimulationConfig>();
+
+        *cfg.load_mass_flow_rate = 0.1;
+        *cfg.load_temp = 10.0;
+
+        app.world_mut()
+            .resource_mut::<Time<Fixed>>()
+            .advance_by(Duration::from_secs_f64(FIXED_TIMESTEP_SECS));
+
+        app.update();
+
+        let new_temp = *app.world().resource::<SimulationConfig>().tank_average_temp;
+
+        assert!(
+            new_temp < initial_temp,
+            "Tank should cool due to water being drawn"
+        );
+    }
+
+    #[test]
+    fn zero_tank_mass_results_in_no_change() {
+        let mut app = setup_app();
+
+        app.add_systems(Update, run_simulation);
+
+        let initial_temp = *app.world().resource::<SimulationConfig>().tank_average_temp;
+        let mut cfg = app.world_mut().resource_mut::<SimulationConfig>();
+
+        *cfg.tank_water_mass = 0.0;
+
+        app.world_mut()
+            .resource_mut::<Time<Fixed>>()
+            .advance_by(Duration::from_secs_f64(60.0));
+        app.update();
+
+        let new_temp = *app.world().resource::<SimulationConfig>().tank_average_temp;
+
+        assert!(
+            (new_temp - initial_temp).abs() < f32::EPSILON,
+            "Tank temperature should not change when mass is zero"
+        );
+    }
+
+    #[test]
+    fn water_temp_in_matches_tank_after_simulation() {
+        let mut app = setup_app();
+
+        app.add_systems(Update, run_simulation);
+        app.world_mut()
+            .resource_mut::<Time<Fixed>>()
+            .advance_by(Duration::from_secs_f64(60.0));
+        app.update();
+
+        let cfg = app.world().resource::<SimulationConfig>();
+
+        assert!(
+            (*cfg.water_temp_in - *cfg.tank_average_temp).abs() < f32::EPSILON,
+            "Water entering panel should equal tank average temperature after update"
+        );
+    }
+
+    #[test]
+    fn surface_area_grows_mass_unchanged() {
+        let mut app = setup_app();
+
+        app.add_systems(Update, update_tank_geometry);
+
+        let mut cfg = app.world_mut().resource_mut::<SimulationConfig>();
+        let original_mass = *cfg.tank_water_mass;
+
+        *cfg.tank_surface_area = 10.0;
+
+        app.update();
+
+        let (mass, max_mass) = tank_mass(app.world().resource::<SimulationConfig>());
+
+        assert_eq!(mass, original_mass);
+        assert!(max_mass > mass);
+    }
+
+    #[test]
+    fn surface_area_shrinks_mass_clamped() {
+        let mut app = setup_app();
+
+        app.add_systems(Update, update_tank_geometry);
+
+        let mut cfg = app.world_mut().resource_mut::<SimulationConfig>();
+
+        *cfg.tank_surface_area = 1.0;
+        *cfg.tank_water_mass = 1000.0;
+
+        app.update();
+
+        let (mass, max_mass) = tank_mass(app.world().resource::<SimulationConfig>());
+
+        assert!(mass <= max_mass);
+        assert!(max_mass < 1000.0);
+    }
+
+    #[test]
+    fn max_mass_updated_original_mass_preserved() {
+        let mut app = setup_app();
+
+        app.add_systems(Update, update_tank_geometry);
+
+        let original_mass = *app.world().resource::<SimulationConfig>().tank_water_mass;
+
+        app.update();
+
+        let (mass, max_mass) = tank_mass(app.world().resource::<SimulationConfig>());
+
+        assert_eq!(mass, original_mass);
+        assert_eq!(max_mass, 797.88446);
+    }
+
+    #[test]
+    fn zero_surface_area_clamps_mass() {
+        let mut app = setup_app();
+
+        app.add_systems(Update, update_tank_geometry);
+
+        let mut cfg = app.world_mut().resource_mut::<SimulationConfig>();
+
+        *cfg.tank_surface_area = 0.0;
+        *cfg.tank_water_mass = 500.0;
+
+        app.update();
+
+        let (mass, max_mass) = tank_mass(app.world().resource::<SimulationConfig>());
+
+        assert_eq!(max_mass, 0.0);
+        assert_eq!(mass, 0.0);
+    }
+
+    #[test]
+    fn min_max_height_diameter_ratio() {
+        let mut app = setup_app();
+
+        app.add_systems(Update, update_tank_geometry);
+
+        let mut cfg = app.world_mut().resource_mut::<SimulationConfig>();
+
+        *cfg.tank_height_diameter_ratio = cfg.tank_height_diameter_ratio.min();
+
+        app.update();
+
+        let mut cfg = app.world_mut().resource_mut::<SimulationConfig>();
+        let (_, max_mass_min) = tank_mass(&cfg);
+
+        *cfg.tank_height_diameter_ratio = cfg.tank_height_diameter_ratio.max();
+
+        app.update();
+
+        let (_, max_mass_max) = tank_mass(app.world().resource::<SimulationConfig>());
+
+        assert!(max_mass_max < max_mass_min);
+    }
+
+    #[test]
+    fn mass_exactly_at_max_remains() {
+        let mut app = setup_app();
+
+        app.add_systems(Update, update_tank_geometry);
+
+        let mut cfg = app.world_mut().resource_mut::<SimulationConfig>();
+        let k = *cfg.tank_height_diameter_ratio;
+        let radius = (*cfg.tank_surface_area / (2.0 * PI * (1.0 + 2.0 * k))).sqrt();
+        let mass_if_full = 2.0 * PI * k * radius.powi(3) * WATER_DENSITY;
+
+        *cfg.tank_water_mass = mass_if_full;
+
+        app.update();
+
+        let (mass, max_mass) = tank_mass(app.world().resource::<SimulationConfig>());
+
+        assert_eq!(mass, max_mass);
+    }
+}
