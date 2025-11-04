@@ -36,7 +36,11 @@ export default function RootLayout({
                     width="100%"
                     position="sticky"
                   >
-                    <Text size="9" mx="2" aria-label="Solarsim">
+                    <Text
+                      size={{ initial: "8", xs: "9" }}
+                      mx="2"
+                      aria-label="Solarsim"
+                    >
                       Solarsim
                     </Text>
                     <ThemeToggle style={{ justifySelf: "end" }} />

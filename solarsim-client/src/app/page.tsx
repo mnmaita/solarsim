@@ -48,6 +48,7 @@ export default function Home() {
         <Flex
           direction={{ initial: "column", md: "row" }}
           gap={{ initial: "8", md: "6" }}
+          align={{ initial: "center", md: "start" }}
         >
           {Error.isError(simulationFields) ? (
             <Text size="8" align="center" aria-label={simulationFields.message}>
@@ -60,8 +61,12 @@ export default function Home() {
                 gap="4"
                 width={{ initial: "100%", md: "50%" }}
                 align={{ initial: "center", md: "start" }}
+                px="4"
               >
-                <Text size={"8"} aria-label="Simulation Parameters">
+                <Text
+                  size={{ initial: "6", xs: "7" }}
+                  aria-label="Simulation Parameters"
+                >
                   Simulation Parameters
                 </Text>
                 <SliderFields
@@ -75,8 +80,12 @@ export default function Home() {
                 gap="4"
                 width={{ initial: "100%", md: "50%" }}
                 align={{ initial: "center", md: "start" }}
+                px="4"
               >
-                <Text size={"8"} aria-label="Simulation Results">
+                <Text
+                  size={{ initial: "6", xs: "7" }}
+                  aria-label="Simulation Results"
+                >
                   Simulation Results
                 </Text>
                 <ReadOnlyFields simulationFields={simulationFields} />
