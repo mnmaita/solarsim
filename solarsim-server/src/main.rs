@@ -4,7 +4,10 @@ use bevy::{
         tab_navigation::{TabGroup, TabNavigationPlugin},
     },
     prelude::*,
-    remote::{RemotePlugin, http::RemoteHttpPlugin},
+    remote::{
+        RemotePlugin,
+        http::{Headers, RemoteHttpPlugin},
+    },
     ui_widgets::{UiWidgetsPlugins, ValueChange, observe},
 };
 use serde::{Deserialize, Serialize};
@@ -22,13 +25,17 @@ mod widgets;
 fn main() {
     let mut app = App::new();
 
+    let cors_headers = Headers::new()
+        .insert("Access-Control-Allow-Origin", "*")
+        .insert("Access-Control-Allow-Headers", "Content-Type");
+
     app.add_plugins((
         DefaultPlugins,
         UiWidgetsPlugins,
         InputDispatchPlugin,
         TabNavigationPlugin,
         RemotePlugin::default(),
-        RemoteHttpPlugin::default(),
+        RemoteHttpPlugin::default().with_headers(cors_headers),
     ))
     .add_plugins(widgets::plugin)
     .add_systems(Startup, setup)
