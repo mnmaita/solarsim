@@ -5,11 +5,11 @@ import "./palette/radix-accents-light.css";
 import "./palette/radix-background-light.css";
 import "./palette/radix-gray-light.css";
 import "@radix-ui/themes/styles.css";
+import "./globals.css";
 
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import { Container, Flex, Section, Text, Theme } from "@radix-ui/themes";
-import "./globals.css";
 import { ThemeToggle } from "./components/ThemeToggle";
 
 export const metadata: Metadata = {
