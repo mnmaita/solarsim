@@ -24,6 +24,8 @@ pub struct SimulationConfig {
     pub(super) pipe_outer_surface_area: SimulationField,
     /// Overall heat transfer coefficient for pipe insulation, measured in W/(m²·K)
     pub(super) pipe_overall_heat_transfer_coefficient: SimulationField,
+    /// Volumetric pump flow rate, measured in m³/s
+    pub(super) pump_flow_rate: SimulationField,
     /// Solar irradiance (energy/area), measured in W/m²
     pub(super) solar_irradiance: SimulationField,
     /// Average tank temperature, measured in °C
@@ -36,8 +38,6 @@ pub struct SimulationConfig {
     pub(super) tank_surface_area: SimulationField,
     /// Amount of water in the tank, measured in Kg
     pub(super) tank_water_mass: SimulationField,
-    /// Volumetric pump flow rate, measured in m³/s
-    pub(super) pump_flow_rate: SimulationField,
     /// Water temperature entering panel, measured in °C
     pub(super) water_temp_in: SimulationField,
 }
@@ -69,6 +69,7 @@ impl Default for SimulationConfig {
                 0.07,
                 SimulationFieldKind::Slider,
             ),
+            pump_flow_rate: SimulationField::new(0.05, 0.05, 0.5, SimulationFieldKind::Slider),
             solar_irradiance: SimulationField::new(800.0, 0.0, 1365.4, SimulationFieldKind::Slider),
             tank_average_temp: SimulationField::new(
                 25.0,
@@ -90,7 +91,6 @@ impl Default for SimulationConfig {
             ),
             tank_surface_area: SimulationField::new(5.0, 1.0, 20.0, SimulationFieldKind::Slider),
             tank_water_mass: SimulationField::new(100.0, 0.0, 2000.0, SimulationFieldKind::Slider),
-            pump_flow_rate: SimulationField::new(0.05, 0.05, 0.5, SimulationFieldKind::Slider),
             water_temp_in: SimulationField::new(25.0, 10.0, 60.0, SimulationFieldKind::ReadOnly),
         }
     }
