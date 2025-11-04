@@ -1,15 +1,32 @@
-use bevy::prelude::*;
+use bevy::{
+    prelude::*,
+    remote::{RemotePlugin, http::RemoteHttpPlugin},
+};
+use serde::{Deserialize, Serialize};
 
 fn main() {
-    App::new()
-        .add_plugins(DefaultPlugins)
-        .add_systems(Startup, hello_world_ui_system)
-        .add_systems(Update, hello_world_system)
-        .run();
+    let mut app = App::new();
+
+    app.add_plugins((
+        DefaultPlugins,
+        RemotePlugin::default(),
+        RemoteHttpPlugin::default(),
+    ))
+    .add_systems(Startup, hello_world_ui_system)
+    .register_type::<HelloWorld>()
+    .init_resource::<HelloWorld>();
+
+    app.run();
 }
 
-fn hello_world_system() {
-    println!("hello world");
+#[derive(Resource, Reflect, Serialize, Deserialize)]
+#[reflect(Resource, Serialize, Deserialize)]
+pub struct HelloWorld(pub String);
+
+impl FromWorld for HelloWorld {
+    fn from_world(world: &mut World) -> Self {
+        Self("Hello World!".to_string())
+    }
 }
 
 fn hello_world_ui_system(mut commands: Commands) {

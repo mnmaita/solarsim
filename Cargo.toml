@@ -12,6 +12,7 @@ codegen-units = 1
 bevy = { version = "0.17.2", default-features = false, features = [
     "bevy_core_pipeline",
     "bevy_log",
+    "bevy_remote",
     "bevy_render",
     "bevy_text",
     "bevy_ui_render",
@@ -20,4 +21,7 @@ bevy = { version = "0.17.2", default-features = false, features = [
     "default_font",
     "multi_threaded",
     "webgpu",
+] }
+serde = { version = "1.0.228", default-features = false, features = [
+    "serde_derive",
 ] }
