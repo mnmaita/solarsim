@@ -22,7 +22,9 @@ pub fn plugin(app: &mut App) {
 
     app.add_plugins(widgets::plugin);
 
-    app.add_systems(Startup, setup).add_systems(
+    app.add_systems(Startup, setup);
+
+    app.add_systems(
         Update,
         update_field_values.run_if(resource_changed::<SimulationConfig>),
     );
@@ -36,24 +38,23 @@ fn setup(mut commands: Commands, cfg: Res<SimulationConfig>) {
 
     let mut slider_children = Vec::default();
     let mut read_only_children = Vec::default();
+    let default_field = (0.0, 100.0, 0.0, SimulationFieldKind::ReadOnly);
 
     if let Ok(s) = cfg.reflect_ref().as_struct() {
         for i in 0..s.field_len() {
             if let Some(name) = s.name_at(i) {
-                let (min, max, value, kind) =
-                    s.field_at(i)
-                        .map_or((0.0, 100.0, 0.0, SimulationFieldKind::ReadOnly), |f| {
-                            f.try_downcast_ref::<SimulationField>()
-                                .map_or((0.0, 100.0, 0.0, SimulationFieldKind::ReadOnly), |field| {
-                                    (field.min(), field.max(), **field, field.kind())
-                                })
-                        });
+                let (min, max, value, kind) = s.field_at(i).map_or(default_field, |f| {
+                    f.try_downcast_ref::<SimulationField>()
+                        .map_or(default_field, |field| {
+                            (field.min(), field.max(), **field, field.kind())
+                        })
+                });
                 let child_entity = commands
                     .spawn((
                         Node {
-                            width: percent(50),
+                            min_width: percent(35),
                             align_items: AlignItems::Stretch,
-                            justify_content: JustifyContent::Center,
+                            // justify_content: JustifyContent::Center,
                             flex_direction: FlexDirection::Column,
                             row_gap: px(5),
                             ..default()
@@ -61,6 +62,7 @@ fn setup(mut commands: Commands, cfg: Res<SimulationConfig>) {
                         children![
                             (
                                 Node {
+                                    align_items: AlignItems::Stretch,
                                     justify_content: JustifyContent::SpaceBetween,
                                     ..default()
                                 },
@@ -118,10 +120,12 @@ fn setup(mut commands: Commands, cfg: Res<SimulationConfig>) {
 
     let slider_node_entity = commands
         .spawn(Node {
-            width: percent(50),
+            width: percent(70),
             height: percent(100),
             align_items: AlignItems::Center,
             flex_direction: FlexDirection::Column,
+            flex_wrap: FlexWrap::Wrap,
+            column_gap: px(20),
             row_gap: px(10),
             ..default()
         })
@@ -130,7 +134,7 @@ fn setup(mut commands: Commands, cfg: Res<SimulationConfig>) {
 
     let read_only_node_entity = commands
         .spawn(Node {
-            width: percent(50),
+            width: percent(30),
             height: percent(100),
             align_items: AlignItems::Center,
             flex_direction: FlexDirection::Column,
