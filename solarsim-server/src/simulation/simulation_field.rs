@@ -53,6 +53,10 @@ impl SimulationField {
     pub fn min(&self) -> f32 {
         self.min
     }
+
+    pub fn set_max(&mut self, max: f32) {
+        self.max = max;
+    }
 }
 
 impl core::fmt::Display for SimulationField {
