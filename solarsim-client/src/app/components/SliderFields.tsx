@@ -39,6 +39,7 @@ export function SliderFields({
             </Text>
             <Slider
               aria-labelledby={fieldName}
+              color="amber"
               value={[fieldValue.value]}
               min={fieldValue.min}
               max={fieldValue.max}
