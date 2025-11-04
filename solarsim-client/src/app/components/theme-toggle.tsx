@@ -20,7 +20,7 @@ export function ThemeToggle({ style }: Props) {
 
   if (!mounted) {
     return (
-      <IconButton style={style} variant="ghost" disabled>
+      <IconButton style={style} variant="ghost" color="yellow" disabled>
         <SunIcon width="24" height="24" />
       </IconButton>
     );
@@ -32,6 +32,7 @@ export function ThemeToggle({ style }: Props) {
     <IconButton
       style={style}
       variant="ghost"
+      color="yellow"
       onClick={() => setTheme(isDark ? "light" : "dark")}
       aria-label="Toggle dark mode"
     >
