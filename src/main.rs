@@ -13,6 +13,8 @@ fn hello_world_system() {
 }
 
 fn hello_world_ui_system(mut commands: Commands) {
+    commands.spawn(Camera2d);
+
     commands.spawn((
         Node {
             width: percent(100),
