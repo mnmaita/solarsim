@@ -28,6 +28,8 @@ fn main() {
         RemoteHttpPlugin::default().with_headers(cors_headers),
     ));
 
+    app.insert_resource(ClearColor(Color::linear_rgb(0.017, 0.017, 0.019)));
+
     app.add_plugins((simulation::plugin, ui::plugin));
 
     app.insert_resource(Time::<Fixed>::from_seconds(0.5));
