@@ -27,10 +27,16 @@ just dev server
 ```
 
 ```sh
-just dev server
+just dev client
 ```
 
 Now you can alter the simulation parameters either on the server window or through the website (http://localhost:3000 by default).
+
+To see a list of all the available recipes `just` run
+
+```sh
+just
+```
 
 ## Server
 
