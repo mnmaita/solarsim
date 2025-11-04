@@ -71,7 +71,7 @@ export type BRPRequestBody =
  *
  * If the "strict" request parameter is set to "true", an object with `components` and `errors` will be retrieved.
  */
-interface BRPGetComponentsResponse extends BRPCommonBody {
+export interface BRPGetComponentsResponse extends BRPCommonBody {
   result:
     | Record<string, JSONValue>
     | {
@@ -80,13 +80,13 @@ interface BRPGetComponentsResponse extends BRPCommonBody {
       };
 }
 
-interface BRPGetResourcesResponse extends BRPCommonBody {
+export interface BRPGetResourcesResponse extends BRPCommonBody {
   result: {
     value: unknown;
   };
 }
 
-interface BRPMutateResourcesResponse extends BRPCommonBody {
+export interface BRPMutateResourcesResponse extends BRPCommonBody {
   result: null;
 }
 
