@@ -13,7 +13,9 @@ export function ThemeToggle({ style }: Props) {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  // Prevent hydration mismatch by ensuring we only render after mount
+  // Prevent hydration mismatch by ensuring we only render after mount.
+  // This is not needed in production builds but we add it to get rid
+  // of some warnings during development.
   const useSafeEffect =
     typeof window === "undefined" ? useEffect : useLayoutEffect;
   useSafeEffect(() => setMounted(true), []);
