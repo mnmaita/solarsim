@@ -16,7 +16,7 @@ export function usePolling<T>(
   fn: () => Promise<T>,
   options: UsePollingOptions = {}
 ) {
-  const { intervalMs = 1000, immediate = true, onError } = options;
+  const { intervalMs = 400, immediate = true, onError } = options;
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<unknown>(null);
