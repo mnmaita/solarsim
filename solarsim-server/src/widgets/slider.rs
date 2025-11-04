@@ -2,11 +2,11 @@ use bevy::{
     input_focus::tab_navigation::TabIndex,
     picking::hover::Hovered,
     prelude::*,
-    ui_widgets::{Slider, SliderRange, SliderThumb, SliderValue, TrackClick},
+    ui_widgets::{CoreSliderDragState, Slider, SliderRange, SliderThumb, SliderValue, TrackClick},
 };
 
 const SLIDER_TRACK: Color = Color::srgb(0.05, 0.05, 0.05);
-const SLIDER_THUMB: Color = Color::srgb(0.35, 0.75, 0.35);
+const SLIDER_THUMB: Color = Color::srgb(0.961, 0.659, 0.0);
 
 pub fn slider(min: f32, max: f32, value: f32) -> impl Bundle {
     (
@@ -18,7 +18,6 @@ pub fn slider(min: f32, max: f32, value: f32) -> impl Bundle {
             justify_items: JustifyItems::Center,
             column_gap: px(4),
             height: px(12),
-            width: percent(30),
             ..default()
         },
         Hovered::default(),
@@ -70,4 +69,49 @@ pub fn slider(min: f32, max: f32, value: f32) -> impl Bundle {
             )),
         )),
     )
+}
+
+fn thumb_color(hovered: bool) -> Color {
+    match hovered {
+        true => SLIDER_THUMB.lighter(0.3),
+        false => SLIDER_THUMB,
+    }
+}
+
+pub(super) fn update_slider_style(
+    sliders: Query<
+        (
+            Entity,
+            &SliderValue,
+            &SliderRange,
+            &Hovered,
+            &CoreSliderDragState,
+        ),
+        (
+            Or<(
+                Changed<SliderValue>,
+                Changed<SliderRange>,
+                Changed<Hovered>,
+                Changed<CoreSliderDragState>,
+            )>,
+            With<Slider>,
+        ),
+    >,
+    children: Query<&Children>,
+    mut thumbs: Query<(&mut Node, &mut BackgroundColor, Has<SliderThumb>), Without<Slider>>,
+) {
+    for (slider_ent, value, range, hovered, drag_state) in sliders.iter() {
+        for child in children.iter_descendants(slider_ent) {
+            if let Ok((mut thumb_node, mut thumb_bg, is_thumb)) = thumbs.get_mut(child)
+                && is_thumb
+            {
+                thumb_node.left = percent(range.thumb_position(value.0) * 100.0);
+                thumb_bg.0 = thumb_color(hovered.0 | drag_state.dragging);
+            }
+        }
+    }
+}
+
+pub fn plugin(app: &mut App) {
+    app.add_systems(Update, update_slider_style);
 }
