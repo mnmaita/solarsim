@@ -1,5 +1,5 @@
 import styles from "./page.module.css";
-import { getResource } from "./requests";
+import { brpRequest } from "./requests";
 import { displayFetchErrorType } from "./utils/fetch";
 
 export default async function Home() {
@@ -8,7 +8,12 @@ export default async function Home() {
       <main className={styles.main}>
         <div className={styles.intro}>
           <h1>
-            {await getResource("HelloWorld")
+            {await brpRequest({
+              id: 0,
+              jsonrpc: "2.0",
+              method: "world.get_resources",
+              params: { resource: "solarsim_server::HelloWorld" },
+            })
               .then((body) => {
                 if (body.ok === false) {
                   return displayFetchErrorType(body.error.type);
