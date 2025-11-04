@@ -9,8 +9,9 @@ import "@radix-ui/themes/styles.css";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
-import { Flex, Text, Theme } from "@radix-ui/themes";
+import { Container, Flex, Section, Text, Theme } from "@radix-ui/themes";
 import "./globals.css";
+import { ThemeToggle } from "./components/theme-toggle";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +37,26 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <Theme appearance="inherit">{children}</Theme>
+          <Theme appearance="inherit">
+            <header>
+              <Section size="1">
+                <Container size="1">
+                  <Flex
+                    direction="row"
+                    justify="center"
+                    width="100%"
+                    position="sticky"
+                  >
+                    <Text size="9" mx="2" aria-label="Solarsim">
+                      Solarsim
+                    </Text>
+                    <ThemeToggle style={{ justifySelf: "end" }} />
+                  </Flex>
+                </Container>
+              </Section>
+            </header>
+            {children}
+          </Theme>
         </ThemeProvider>
       </body>
     </html>
